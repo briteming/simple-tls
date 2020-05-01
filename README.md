@@ -1,6 +1,6 @@
 # simple-tls
 
-可能是最简单的tls插件。
+可能是最简单的tls/wss套壳伪装插件。
 
 ---
 
@@ -9,39 +9,37 @@
 特点：
 
 * 强制使用TLS1.3
-* 支持Websocket
-* 支持shadowsocks插件
-* 支持Android
-* 简单
+* 支持shadowsocks插件模式(sip003)，客户端支持Android
+* 体积小(<2M)性能高更适用于路由
 
 ## 命令
 
     |client|-->|simple-tls client|--TLS1.3-->|simple-tls server|-->|destination|
 
     -b string
-        [Host:Port] 监听地址 (必需，插件模式除外)
+        [Host:Port] 监听地址 (必需，SIP003插件模式除外)
     -d string
-        [Host:Port] 目的地地址 (必需，插件模式除外)
+        [Host:Port] 目的地地址 (必需，SIP003插件模式除外)
     -wss
         使用 Websocket Secure 协议
     -path string
         Websocket 的路径
 
     # 客户端模式
+    -n string
+        服务端名称，用于证书host name验证 (客户端必需)
     -cca string
         客户端用于验证服务器的无补全的base64编码的PEM格式CA证书。
         如果服务端证书是合法证书的话一般不需要此参数，
         simple-tls会使用系统的证书池去验证证书。
-    -n string
-        服务端名称，用于证书host name验证 (必需)
 
     # 服务端模式
     -s    
-        以服务端模式运行，不加此参数就变客户端了 (必需)
+        以服务端模式运行 (服务端必需)
     -cert string
-        [Path] PEM格式的证书 (必需)
+        [Path] PEM格式的证书 (服务端必需)
     -key string
-        [Path] PEM格式的密钥 (必需)
+        [Path] PEM格式的密钥 (服务端必需)
 
     # 其他
     -gen-cert
@@ -55,7 +53,7 @@
     -t int
         timeout after sec (default 300)
 
-**无补全的base64编码：**如果base64编码末尾有`=`，去掉它们。
+**无补全的base64编码：** 如果base64编码末尾有`=`，去掉它们。
 
 ## SIP003
 
@@ -88,6 +86,8 @@
 从[Let's Encrypt](https://letsencrypt.org/)可以免费获得一个合法的证书。
 
 TLS 1.3的加密强度足够。下层的加密强度可降低或不加密。
+
+v2ray-plagin使用`mux=0`禁用mux后，simple-tls的wss模式与v2ray-plagin的websocket(HTTPS)模式双向兼容。服务端客户端可混用。
 
 ---
 
